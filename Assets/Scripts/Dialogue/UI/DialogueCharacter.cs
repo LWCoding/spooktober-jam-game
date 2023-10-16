@@ -61,7 +61,7 @@ namespace SpookyMurderMystery.Dialogue
             while (currTime < timeToWait)
             {
                 currTime += Time.deltaTime;
-                transform.position = Vector2.Lerp(modifiedPosition, _initialPosition, currTime / timeToWait);
+                transform.position = Vector2.Lerp(modifiedPosition, _initialPosition, Mathf.SmoothStep(0, 1, currTime / timeToWait));
                 _characterImage.color = Color.Lerp(initialColor, targetColor, currTime / timeToWait);
                 yield return null;
             }
