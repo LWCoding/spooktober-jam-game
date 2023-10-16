@@ -43,6 +43,8 @@ namespace SpookyMurderMystery.Dialogue
             StartCoroutine(LerpDialogueUIAlphaCoroutine(0, 1, delay));
         }
 
+        public bool IsDialogueShowing() => _dialogueContainerCanvasGroup.alpha == 1;
+
         /// <summary>
         /// Hides the dialogue user interface. Takes a while to animate out.
         /// Check IsDialogueShowing() to check when finished.
@@ -80,8 +82,6 @@ namespace SpookyMurderMystery.Dialogue
             StartCoroutine(RenderDialogueTextCoroutine());
         }
 
-        private bool IsDialogueShowing() => _dialogueContainerCanvasGroup.alpha == 1;
-
         private IEnumerator RenderDialogueTextCoroutine()
         {
             // If we're not showing the dialogue UI, make sure that is animated in first.
@@ -97,6 +97,11 @@ namespace SpookyMurderMystery.Dialogue
                 DialogueText dText = _dialogueQueue.Dequeue();
                 // Set the speaker sprite if applicable.
                 _primaryDialogueCharacter.SetSprite(dText.PrimaryCharacterSprite);
+                if (dText.PrimaryCharacterSprite != null)
+                {
+                    // If the character is new, animate it in.
+                    _primaryDialogueCharacter.AnimateCharacterIn();
+                }
                 // Set the speaker name.
                 _dialogueSpeakerNameText.text = dText.SpeakerName;
                 // Set the destination text and create an empty string builder.
