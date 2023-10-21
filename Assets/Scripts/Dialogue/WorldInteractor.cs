@@ -9,13 +9,6 @@ namespace SpookyMurderMystery.Dialogue
     public abstract class WorldInteractor : MonoBehaviour
     {
 
-        // When this sprite is clicked, show dialogue if not 
-        // already happening.
-        private void OnMouseDown()
-        {
-            OnInteract();
-        }
-
         public abstract void OnInteract();
 
     }

@@ -49,7 +49,7 @@ namespace SpookyMurderMystery.Dialogue
         /// Hides the dialogue user interface. Takes a while to animate out.
         /// Check IsDialogueShowing() to check when finished.
         /// </summary>
-        public void HideDialogueUI(float delay = 0.8f) => StartCoroutine(LerpDialogueUIAlphaCoroutine(1, 0, delay));
+        public void HideDialogueUI(float delay = 0.3f) => StartCoroutine(LerpDialogueUIAlphaCoroutine(1, 0, delay));
 
         /// <summary>
         /// Removes all instances of dialogue from the current queue.
