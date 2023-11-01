@@ -11,26 +11,24 @@ namespace SpookyMurderMystery
         [Tooltip("The object that will show up when this object is in radius")]
         [SerializeField] private GameObject _popupObject;
 
-        private bool _isActivatable = false;
-
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            IsActivateable = true;
             _popupObject.SetActive(true);
-            _isActivatable = true;
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
+            IsActivateable = false;
             _popupObject.SetActive(false);
-            _isActivatable = false;
         }
 
         private void Update()
         {
-            if (!_isActivatable) { return; }
+            if (!IsActivateable) { return; }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                _eventToTrigger.Invoke();
+                _eventToTrigger.Invoke(this);
             }
         }
 

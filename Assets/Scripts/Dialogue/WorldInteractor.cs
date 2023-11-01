@@ -9,7 +9,8 @@ namespace SpookyMurderMystery.Dialogue
     public abstract class WorldInteractor : MonoBehaviour
     {
 
-        public abstract void OnInteract();
+        public abstract void OnInteract(WorldTrigger activatedTrigger);
+        public abstract IEnumerator OnCompleteCoroutine(WorldTrigger activatedTrigger);
 
     }
 }

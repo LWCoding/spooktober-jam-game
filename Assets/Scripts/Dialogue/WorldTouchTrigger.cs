@@ -10,7 +10,8 @@ namespace SpookyMurderMystery
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            _eventToTrigger.Invoke();
+            if (!IsActivateable) { return; }
+            _eventToTrigger.Invoke(this);
         }
 
     }

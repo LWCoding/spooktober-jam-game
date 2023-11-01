@@ -19,6 +19,8 @@ namespace SpookyMurderMystery.Dialogue
 
         private Queue<DialogueText> _dialogueQueue = new();
 
+        public bool IsAnimating() => _dialogueContainerCanvasGroup.alpha != 0;
+
         private void Awake()
         {
             // If there is already an instance, destroy this.
@@ -35,7 +37,7 @@ namespace SpookyMurderMystery.Dialogue
         /// Shows the dialogue user interface. Takes a while to animate in.
         /// Check IsDialogueShowing() to check when finished.
         /// </summary>
-        public void ShowDialogueUI(float delay = 0.8f)
+        public void ShowDialogueUI(float delay = 0.3f)
         {
             _primaryDialogueCharacter.ClearSprite(); // Hide any currently displayed sprite.
             _dialogueSpeakerNameText.text = ""; // Hide any currently displayed name.
@@ -90,9 +92,13 @@ namespace SpookyMurderMystery.Dialogue
                 ShowDialogueUI();
                 yield return new WaitUntil(() => IsDialogueShowing());
             }
+            float defTimeBtwnChar = 0.04f;  // Default time to wait between characters.
+            float timeElapsed = 0;  // Variable for curr iter, temp variable
+            float timeBtwnChar; // Variable used for curr iter, time to wait between characters
             // Loop through all of the current dialogue and render the lines of text.
             while (_dialogueQueue.Count > 0)
             {
+                timeBtwnChar = defTimeBtwnChar;
                 // Animate first string of dialogue.
                 DialogueText dText = _dialogueQueue.Dequeue();
                 // Set the speaker sprite if applicable.
@@ -112,10 +118,20 @@ namespace SpookyMurderMystery.Dialogue
                 {
                     currentStrBldr.Append(destinationStr[currentStrBldr.Length]);
                     _dialogueText.text = currentStrBldr.ToString();
-                    yield return new WaitForSeconds(0.05f);
+                    timeElapsed = 0;
+                    while (timeElapsed < timeBtwnChar)
+                    {
+                        timeElapsed += Time.deltaTime;
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            timeBtwnChar = 0;
+                        }
+                        yield return null;
+                    }
                 }
-                // Wait.
-                yield return new WaitForSeconds(1);
+                // Wait until the player clicks + lifts up the left-mouse button.
+                yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+                yield return new WaitUntil(() => Input.GetMouseButtonUp(0));
             }
             // After dialogue is rendered, hide the dialogue box.
             HideDialogueUI();

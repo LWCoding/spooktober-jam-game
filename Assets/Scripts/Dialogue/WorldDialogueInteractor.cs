@@ -18,11 +18,20 @@ namespace SpookyMurderMystery.Dialogue
             _dialogueManager = DialogueManager.Instance;
         }
 
-        public override void OnInteract()
+        public override void OnInteract(WorldTrigger activatedTrigger)
         {
+            activatedTrigger.IsActivateable = false;
             _dialogueManager.ClearDialogueQueue();
             _dialogueManager.QueueDialogueText(DialogueToRender);
             _dialogueManager.RenderDialogueText();
+            StartCoroutine(OnCompleteCoroutine(activatedTrigger));
+        }
+
+        public override IEnumerator OnCompleteCoroutine(WorldTrigger activatedTrigger)
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitUntil(() => !DialogueManager.Instance.IsAnimating());
+            activatedTrigger.IsActivateable = true;
         }
 
     }

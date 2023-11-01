@@ -10,7 +10,9 @@ namespace SpookyMurderMystery
     {
 
         [Header("Event to Trigger")]
-        [SerializeField] protected UnityEvent _eventToTrigger;
+        [SerializeField] protected UnityEvent<WorldTrigger> _eventToTrigger;
+
+        public bool IsActivateable = false;
 
         private void Awake()
         {
