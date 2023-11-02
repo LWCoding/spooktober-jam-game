@@ -14,12 +14,16 @@ namespace SpookyMurderMystery.Dialogue
         [Header("Sprite Information")]
         [Tooltip("The sprite the character should become as it says this dialogue. If None, sprite will be unchanged.")]
         public Sprite PrimaryCharacterSprite;
+        [Header("Option Information")]
+        public List<DialogueOption> Options;
 
         public DialogueText(string name, string text) : this()
         {
             SpeakerName = name;
             Text = text;
         }
+
+        public bool HasOptions() => Options.Count != 0;
 
     }
 }

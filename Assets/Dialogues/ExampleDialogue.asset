@@ -16,6 +16,12 @@ MonoBehaviour:
   - SpeakerName: Billy
     Text: My name is Billy nyuk nyuk!
     PrimaryCharacterSprite: {fileID: 21300000, guid: 906092ce06d923e4f9ab26f2db50db1e, type: 3}
+    Options: []
   - SpeakerName: Billy
     Text: I speak for the treeeesss!
     PrimaryCharacterSprite: {fileID: 0}
+    Options:
+    - OptionName: You're cool
+      DialogueToRenderIfChosen: {fileID: 11400000, guid: 86e07f65718abcc48a4b769ba9c14f5a, type: 2}
+    - OptionName: You're dumb
+      DialogueToRenderIfChosen: {fileID: 11400000, guid: e2277b9c136bf68429b45e53227ea901, type: 2}

@@ -16,6 +16,7 @@ namespace SpookyMurderMystery.Dialogue
         [SerializeField] private DialogueCharacter _primaryDialogueCharacter;
         [SerializeField] private TextMeshProUGUI _dialogueSpeakerNameText;
         [SerializeField] private TextMeshProUGUI _dialogueText;
+        [SerializeField] private List<DialogueOptionHandler> _dialogueOptionHandlers;
 
         private Queue<DialogueText> _dialogueQueue = new();
 
@@ -84,8 +85,18 @@ namespace SpookyMurderMystery.Dialogue
             StartCoroutine(RenderDialogueTextCoroutine());
         }
 
+        private void HideAllDialogueOptions()
+        {
+            // Disable all dialogue options.
+            for (int i = 0; i < _dialogueOptionHandlers.Count; i++)
+            {
+                _dialogueOptionHandlers[i].gameObject.SetActive(false);
+            }
+        }
+
         private IEnumerator RenderDialogueTextCoroutine()
         {
+            HideAllDialogueOptions();  // Hide any pre-existing dialogue options!
             // If we're not showing the dialogue UI, make sure that is animated in first.
             if (!IsDialogueShowing())
             {
@@ -118,6 +129,7 @@ namespace SpookyMurderMystery.Dialogue
                 {
                     currentStrBldr.Append(destinationStr[currentStrBldr.Length]);
                     _dialogueText.text = currentStrBldr.ToString();
+                    // Wait for `timeBtwnChar` seconds. Delay may be skipped by the player.
                     timeElapsed = 0;
                     while (timeElapsed < timeBtwnChar)
                     {
@@ -129,12 +141,40 @@ namespace SpookyMurderMystery.Dialogue
                         yield return null;
                     }
                 }
+                // Run logic depending on the dialogue's type.
+                yield return AfterDialogueRenderedCoroutine(dText);
+            }
+            // After dialogue is rendered, hide the dialogue box.
+            HideDialogueUI();
+        }
+
+        private IEnumerator AfterDialogueRenderedCoroutine(DialogueText dText)
+        {
+            // Run logic depending on the dialogue's type.
+            if (dText.HasOptions())
+            {
+                // Render options. Assume each renders their own logic when selected.
+                for (int i = 0; i < _dialogueOptionHandlers.Count; i++)
+                {
+                    DialogueOptionHandler doh = _dialogueOptionHandlers[i];
+                    if (i >= dText.Options.Count)
+                    {
+                        doh.gameObject.SetActive(false);
+                    } else
+                    {
+                        doh.gameObject.SetActive(true);
+                        doh.SetText(dText.Options[i].OptionName);
+                        doh.SetDialogue(dText.Options[i].DialogueToRenderIfChosen);
+                    }
+                }
+                StopAllCoroutines();
+            }
+            else
+            {
                 // Wait until the player clicks + lifts up the left-mouse button.
                 yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
                 yield return new WaitUntil(() => Input.GetMouseButtonUp(0));
             }
-            // After dialogue is rendered, hide the dialogue box.
-            HideDialogueUI();
         }
 
         private IEnumerator LerpDialogueUIAlphaCoroutine(float initialAlpha, float targetAlpha, float timeToWait)
