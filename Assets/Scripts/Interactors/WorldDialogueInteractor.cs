@@ -1,10 +1,18 @@
 using SpookyMurderMystery.Dialogue;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.VisualScripting;
 using UnityEngine;
-
 namespace SpookyMurderMystery.Dialogue
 {
+    /// <summary>
+    /// WorldDialogueInteractor controls interactions that render dialogue when interacted with in world space.
+    /// The Dialogue must be supplied as a ScriptableObject to this component.
+    /// 
+    /// To use this class, attach the WorldDialogueInteractor component to an object and trigger it using an object with any WorldTrigger script.
+    /// </summary>
     public class WorldDialogueInteractor : WorldInteractor
     {
 
@@ -18,20 +26,21 @@ namespace SpookyMurderMystery.Dialogue
             _dialogueManager = DialogueManager.Instance;
         }
 
-        public override void OnInteract(WorldTrigger activatedTrigger)
-        {
-            activatedTrigger.IsActivateable = false;
+        public override void OnInteract()
+        { 
+            if (IsBusy) return;  // If this interactor is already doing something, stop.
             _dialogueManager.ClearDialogueQueue();
             _dialogueManager.QueueDialogueText(DialogueToRender);
             _dialogueManager.RenderDialogueText();
-            StartCoroutine(OnCompleteCoroutine(activatedTrigger));
+            StartCoroutine(OnCompleteCoroutine());
         }
 
-        public override IEnumerator OnCompleteCoroutine(WorldTrigger activatedTrigger)
+        public override IEnumerator OnCompleteCoroutine()
         {
+            IsBusy = true;
             yield return new WaitForEndOfFrame();
-            yield return new WaitUntil(() => !DialogueManager.Instance.IsAnimating());
-            activatedTrigger.IsActivateable = true;
+            yield return new WaitUntil(() => !_dialogueManager.IsAnimating());
+            IsBusy = false;
         }
 
     }

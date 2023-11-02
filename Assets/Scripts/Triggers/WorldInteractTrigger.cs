@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace SpookyMurderMystery
 {
+    /// <summary>
+    /// WorldInteractTrigger is responsible for triggering an event when an object is within the specified radius
+    /// of this object, and the user presses the "E" key (the interact button).
+    /// 
+    /// To use this class, simply attach the WorldInteractTrigger component to any GameObject
+    /// and select a corresponding function to call in the Unity Inspector.
+    /// </summary>
     public class WorldInteractTrigger : WorldTrigger
     {
 
@@ -28,7 +35,7 @@ namespace SpookyMurderMystery
             if (!IsActivateable) { return; }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                _eventToTrigger.Invoke(this);
+                _eventToTrigger.Invoke();
             }
         }
 
